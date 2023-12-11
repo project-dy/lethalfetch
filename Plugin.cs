@@ -13,13 +13,13 @@ namespace LethalFetch
         private string template = @"
 +---------+ OS: Fortune OS
 |         | Kernel: GNU/Hurd 0.1.2-3
-| ({ 3 }) | Uptime: {0}
+| ({0}) | Uptime: {1}
 |         | Packages: 6 (braken) 9 (rpm)
 +---------+ Shell: quota
             Terminal: VT-33000
             CPU: BORSON 300 @ 2500 MH
             GPU: Nvidia Tesla V900
-            Memory:  {1} MiB / 448 MiB"; // 431, 448 is the closest one that makes sense
+            Memory:  {2} MiB / 448 MiB"; // 431, 448 is the closest one that makes sense
 
             private int ramUsed;
         private const int ramMax = 448;
@@ -45,6 +45,7 @@ namespace LethalFetch
 
             keyword = CreateTerminalKeyword("neofetch", template);
             AddTerminalKeyword(keyword);
+            Logger.LogInfo("Added keyword neofetch");
         }
 
         private void updateKeyword(Object sender, TerminalTextChangedEventArgs e) {
@@ -65,13 +66,14 @@ namespace LethalFetch
             String other = rand.Next(10) > 2 ? "image" : "anime";
 
             // update text
-            var text = String.Format(template, uptimeStr, ramUsedStr, other);
+            var text = String.Format(template, other, uptimeStr, ramUsedStr);
             // update keyword
             keyword = CreateTerminalKeyword("neofetch", text, true);
             UpdateKeyword(keyword);
         }
 
         private void RecordBootTime(object sender, TerminalEventArgs e) {
+            Logger.LogInfo("Recorded boot time");
             boot = DateTime.Now;
         }
 
