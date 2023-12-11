@@ -12,16 +12,16 @@ namespace LethalFetch
     {
         private string template = @"
 +---------+ OS: Fortune OS
-|         | Kernel: GNU/Hurd 0.1.2-3
+|         | Kernel: GNU/Hurd v45
 | ({0}) | Uptime: {1}
-|         | Packages: 6 (braken) 9 (rpm)
+|         | Packages: 6 (bracken) 9 (rpm)
 +---------+ Shell: quota
             Terminal: VT-33000
-            CPU: BORSON 300 @ 2500 MH
+            CPU: BORSON 300 @ 2500 MHz
             GPU: Nvidia Tesla V900
             Memory:  {2} MiB / 448 MiB"; // 431, 448 is the closest one that makes sense
 
-            private int ramUsed;
+        private int ramUsed;
         private const int ramMax = 448;
         private Random rand;
         private TerminalKeyword keyword;
