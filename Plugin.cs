@@ -3,6 +3,24 @@ using TerminalApi;
 using System;
 using static TerminalApi.TerminalApi;
 using static TerminalApi.Events.Events;
+// using TerminalApi.Events;
+
+/*
+Welcome to the FORTUNE-9 OS
+	Courtesy of the Company
+
+Happy [currentDay].
+
+Type "Help" for a list of commands.
+
+[TooManyEmotes]
+Type "Emotes" for a list of commands.
+
+
+
+
+
+ */
 
 namespace LethalFetch
 {
@@ -10,6 +28,21 @@ namespace LethalFetch
     [BepInDependency("atomic.terminalapi", MinimumDependencyVersion: "1.2.0")]
     public class Plugin : BaseUnityPlugin
     {
+        private string orgtemplate = @"
+Welcome to the FORTUNE-9 OS
+	Courtesy of the Company
+
+Happy [currentDay].
+
+Type ""Help"" for a list of commands.
+
+[TooManyEmotes]
+Type ""Emotes"" for a list of commands.
+
+
+
+
+";
         private string template = @"
 +---------+ OS: Fortune OS
 |         | Kernel: GNU/Hurd v45
@@ -26,6 +59,32 @@ namespace LethalFetch
         private Random rand;
         private TerminalKeyword keyword;
         private DateTime boot;
+        private string theText;
+
+        /*private string getSpecialNodeList()
+        {
+            string result = "";
+            foreach (var node in SpecialNodes)
+            {
+                result += node.displayText + ", ";
+            }
+            return result;
+        }*/
+
+        private void NeoFetchOnInit(object sender, TerminalEventArgs e)
+        {
+            Logger.LogMessage("Terminal is awake");
+
+            updateKeyword(sender, null);
+            // show it
+            TerminalNode node = new TerminalNode();
+            node.displayText = theText;
+            //node.displayText = SpecialNodes[1].displayText;
+            node.clearPreviousText = true;
+            //SpecialNodes.Add(node);
+            SpecialNodes[13] = node;
+            Logger.LogMessage("Added node");
+        }
 
         private void Awake()
         {
@@ -34,6 +93,7 @@ namespace LethalFetch
 
             // subscribe to events
             TerminalBeginUsing += RecordBootTime;
+            TerminalBeginUsing += NeoFetchOnInit;
             // update the text to contain accurate uptime
             TerminalTextChanged += updateKeyword;
 
@@ -46,9 +106,15 @@ namespace LethalFetch
             keyword = CreateTerminalKeyword("neofetch", template);
             AddTerminalKeyword(keyword);
             Logger.LogInfo("Added keyword neofetch");
+
+
         }
 
+        //private 
+
+
         private void updateKeyword(Object sender, TerminalTextChangedEventArgs e) {
+            Logger.LogInfo(SpecialNodes[1].displayText);
             // find uptime string
             String uptimeStr;
             var uptime = DateTime.Now - boot;
@@ -67,6 +133,7 @@ namespace LethalFetch
 
             // update text
             var text = String.Format(template, other, uptimeStr, ramUsedStr);
+            theText = text;
             // update keyword
             keyword = CreateTerminalKeyword("neofetch", text, true);
             UpdateKeyword(keyword);

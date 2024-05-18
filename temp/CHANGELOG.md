@@ -1,7 +1,3 @@
-# 0.1.3
-
-Show a message when the terminal is launched.
-
 # 0.1.2
 
 Fixed typos.
